@@ -1,14 +1,15 @@
 package io.github.cdpi.website.generator;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.function.Consumer;
 import org.apache.commons.lang3.event.EventListenerSupport;
-import org.apache.commons.lang3.function.FailableConsumer;
 import io.github.cdpi.Argument;
 import io.github.cdpi.annotations.WorkInProgress;
 import io.github.cdpi.exceptions.NullArgumentException;
-import io.github.cdpi.website.generator.events.WebSiteGeneratorEvent;
 
 /**
  * <h1>WebSiteGenerator</h1>
@@ -33,6 +34,7 @@ public final class WebSiteGenerator extends Configuration implements IWebSiteGen
 	 * 
 	 * @since 0.3.2
 	 */
+	@Override
 	public final void addEventListener(final IEventListener listener)
 		{
 		listeners.addListener(Argument.notNull(listener));
@@ -43,6 +45,7 @@ public final class WebSiteGenerator extends Configuration implements IWebSiteGen
 	 * 
 	 * @since 0.3.4
 	 */
+	@Override
 	public final void addEventListener(final IEventListener listener, final boolean allowDuplicate)
 		{
 		listeners.addListener(Argument.notNull(listener), allowDuplicate);
@@ -53,6 +56,7 @@ public final class WebSiteGenerator extends Configuration implements IWebSiteGen
 	 * 
 	 * @since 0.3.4
 	 */
+	@Override
 	public final void removeEventListener(final IEventListener listener)
 		{
 		listeners.removeListener(Argument.notNull(listener));
@@ -60,63 +64,50 @@ public final class WebSiteGenerator extends Configuration implements IWebSiteGen
 
 	@Override
 	@WorkInProgress
-	public void run()
+	public void run() throws IOException
 		{
 		//ActionEvent e = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "something");
 		//final var event = new WebSiteGeneratorEvent(this);
-		listeners.fire().run(new WebSiteGeneratorEvent(this));
+		//listeners.fire().run(new WebSiteGeneratorEvent(this));
+
+		final var configuration = getConfiguration("website.json");
+
+		//System.out.println(configuration.get("source"));
+		//System.out.println(configuration.get("destination"));
+
+		//final var markdown = new Markdown();
+
+		walk(Paths.get(configuration.get("source").toString()), path ->
+			{
+			System.out.println(path);
+			/*
+			if (io.github.cdpi.IO.isMarkdown().test(path))
+				{
+				final var html = markdown.render(path);
+				System.out.println(html);
+				}
+			*/
+			});
 		}
 
-	//public static final IWebSitePublisher getWebSitePublisher(final String className) throws ReflectiveOperationException
-	//return IWebSitePublisher.class.cast(Core.newInstance(className));
-
-	//final var html = new MarkdownToHTML().process(source);
-	//final var renderer = new HTML("templates").getTemplateRenderer(template);
-	//final var webpage = renderer.render(Map.of("html", html));
-	//Files.writeString(destination, webpage);
-
 	@WorkInProgress
-	public final void walk(final Path directory, final FailableConsumer<Path, IOException> consumer) throws IOException
+	public final void walk(final Path directory, final Consumer<Path> consumer)
 		{
 		Argument.notNull(directory);
 		Argument.notNull(consumer);
 
 		try (final var paths = Files.newDirectoryStream(directory))
 			{
-			listeners.fire().walk(new WebSiteGeneratorEvent(this));
+			//listeners.fire().walk(new WebSiteGeneratorEvent(this));
 
 			for (final var path : paths)
 				{
 				consumer.accept(path);
 				}
 			}
-		}
-
-	/*
-	public final void devMarkdownToHTML(final Path directory) throws IOException
-		{
-		final var paths = new ArrayList<Path>();
-
-		devWalk(directory, path ->
+		catch (final IOException ex)
 			{
-			final var isMarkdown = path.getFileName().toString().endsWith(".md");
-
-			if (isMarkdown)
-				{
-				paths.add(path);
-				}
-			});
-
-		final var markdown = new Markdown();
-
-		markdown.toHTML(paths, (path, html) ->
-			{
-			System.out.println(path);
-			System.out.println(html);
-			System.out.println();
-			System.out.println("-----------------------------------------------------------------");
-			System.out.println();
-			});
+			throw new UncheckedIOException(ex);
+			}
 		}
-	*/
 	}

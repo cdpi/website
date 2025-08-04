@@ -1,39 +1,43 @@
 package io.github.cdpi.website.generator;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.io.UncheckedIOException;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.Function;
-import org.apache.commons.lang3.function.FailableBiConsumer;
-import org.apache.commons.lang3.stream.Streams;
-import io.github.cdpi.Argument;
-import io.github.cdpi.annotations.WorkInProgress;
+import io.github.cdpi.exceptions.NullArgumentException;
 import io.github.cdpi.flexmark.Flexmark;
+import io.github.cdpi.io.IO;
 
-// Mettre ici tt les codes Markdown, on réorganise après...
-
-@WorkInProgress
-public final class Markdown
+/**
+ * <h1>Markdown</h1>
+ * 
+ * @version 0.3.4
+ * @since 0.3.4
+ */
+public final class Markdown extends Flexmark implements Function<String, String>
 	{
-	private final Function<String, String> renderer;
-
-	public Markdown()
+	/**
+	 * @throws NullArgumentException
+	 * 
+	 * @since 0.3.4
+	 */
+	@Override
+	public String apply(final String markdown)
 		{
-		super();
-
-		renderer = Flexmark.getHTMLRenderer();
+		return render(parse(markdown));
 		}
 
-	public final String toHTML(final Path path) throws IOException
+	/**
+	 * @throws NullArgumentException
+	 * @throws UncheckedIOException
+	 * 
+	 * @since 0.3.4
+	 */
+	public String render(final Path path)
 		{
-		Argument.notNull(path);
-
-		final var markdown = Files.readString(path, StandardCharsets.UTF_8);
-
-		return renderer.apply(markdown);
+		return IO.READ.andThen(this::apply).apply(path);
 		}
+
+	/*
 
 	public final void toHTML(final List<Path> paths, final FailableBiConsumer<Path, String, IOException> consumer) throws IOException
 		{
@@ -56,4 +60,5 @@ public final class Markdown
 			consumer.accept(path, html);
 			});
 		}
+	*/
 	}

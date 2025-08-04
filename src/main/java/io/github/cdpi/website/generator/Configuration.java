@@ -36,11 +36,19 @@ public class Configuration
 	 * 
 	 * @since 0.3.4
 	 */
+	@SuppressWarnings("unused")
 	public final Map<String, ?> getConfiguration(final Path path) throws IOException
 		{
 		final var map =  JSON.readAsMap(path);
 
 		// TODO: Remplacer les variables {sdsd}
+		map.forEach((key, value) ->
+			{
+			if (value instanceof String stringValue)
+				{
+				//map.put(key, (Object) stringTemplate.render(stringValue));
+				}
+			});
 
 		return map;
 		}
