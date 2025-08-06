@@ -37,8 +37,20 @@ public final class Markdown extends Flexmark implements Function<String, String>
 		return IO.READ.andThen(this::apply).apply(path);
 		}
 
-	/*
+	// read .md
+	//new ReadTextFile();
 
+	// md2html
+	//new MarkdownToHTML();
+
+	// webpage template
+	//new RenderTemplateOperation();
+	//new RenderTemplateOperation(tpl);
+
+	// write .html
+	//new WriteTextFile();
+
+	/*
 	public final void toHTML(final List<Path> paths, final FailableBiConsumer<Path, String, IOException> consumer) throws IOException
 		{
 		Argument.notNull(paths);

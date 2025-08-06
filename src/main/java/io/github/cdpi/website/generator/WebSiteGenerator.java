@@ -10,6 +10,7 @@ import org.apache.commons.lang3.event.EventListenerSupport;
 import io.github.cdpi.Argument;
 import io.github.cdpi.annotations.WorkInProgress;
 import io.github.cdpi.exceptions.NullArgumentException;
+import io.github.cdpi.io.IO;
 
 /**
  * <h1>WebSiteGenerator</h1>
@@ -72,21 +73,22 @@ public final class WebSiteGenerator extends Configuration implements IWebSiteGen
 
 		final var configuration = getConfiguration("website.json");
 
-		//System.out.println(configuration.get("source"));
-		//System.out.println(configuration.get("destination"));
+		final var source = Paths.get(configuration.get("source").toString());
+		final var destination = Paths.get(configuration.get("destination").toString());
 
-		//final var markdown = new Markdown();
+		final var markdown = new Markdown();
 
-		walk(Paths.get(configuration.get("source").toString()), path ->
+		walk(source, path ->
 			{
-			System.out.println(path);
-			/*
-			if (io.github.cdpi.IO.isMarkdown().test(path))
-				{
-				final var html = markdown.render(path);
-				System.out.println(html);
-				}
-			*/
+			//System.out.println(source.relativize(path));
+			//var x = destination.resolve(source.relativize(path));
+			//System.out.println(x);
+
+			final var temp = destination.resolve(source.relativize(path)).toString() + ".html";
+
+			final var html = markdown.render(path);
+
+			IO.WRITE.apply(Paths.get(temp), html);
 			});
 		}
 
