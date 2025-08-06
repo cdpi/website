@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.Predicate;
-
 import io.github.cdpi.Argument;
 import io.github.cdpi.copilot.api.Conversation;
 import io.github.cdpi.exceptions.NullArgumentException;

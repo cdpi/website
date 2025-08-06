@@ -1,7 +1,33 @@
-package io.github.cdpi.website.generator;
+package io.github.cdpi.website.generator.configuration;
 
-public class Source
+import java.nio.file.Path;
+
+/**
+ * <h1>Source</h1>
+ * 
+ * @version 0.3.5
+ * @since 0.3.5
+ */
+public final class Source
 	{
+	private String path;
+
+	/**
+	 * @since 0.3.5
+	 */
+	private Source()
+		{
+		super();
+		}
+
+	/**
+	 * @since 0.3.5
+	 */
+	public Path getPath()
+		{
+		return Path.of(path);
+		}
+
 	//Directory
 
 	//public static final IWebSitePublisher getWebSitePublisher(final String className) throws ReflectiveOperationException

@@ -1,6 +1,11 @@
 {
 "name": "Java WebSite Generator",
 "url": null,
-"source": "articles/",
-"destination": "docs/"
+"destination": "docs/",
+"sources":
+	[
+	{
+	"path": "articles/"
+	}
+	]
 }
